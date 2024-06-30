@@ -14,4 +14,4 @@ documents_embeddings = vo.embed(
     texts=["hello world"], model="voyage-law-2", input_type="document"
 ).embeddings
 
-print(documents_embeddings)
+print(len(documents_embeddings[0]))
