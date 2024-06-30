@@ -15,8 +15,9 @@ with gr.Blocks() as demo:
     input_pdf = PDF(label="Document")
     output_pdf = PDF(label="Document")
 
-    print(input_pdf)
-
+    audio_file = "assets/gandalf_speech.mp3"
+    audio_button = gr.Audio(audio_file, autoplay=False, label="Play Audio")
+    
     gr.Interface(
         fn=inference,
         inputs=[input_pdf],
