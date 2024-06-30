@@ -10,11 +10,13 @@ from astrapy.constants import VectorMetric
 from transformers import AutoTokenizer, AutoModel
 import torch
 import traceback
+import voyageai
+import time
 
 from dotenv import load_dotenv
 load_dotenv()
 
-collection_name = "mount_doom2"
+collection_name = "mount_doom"
 file_path = "../regulations/EVS_EN_62304;2006+A1;2015_en.pdf"
 tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
 model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
@@ -25,6 +27,22 @@ def get_embedding(text):
         outputs = model(**inputs)
     return outputs.last_hidden_state.mean(dim=1).squeeze().numpy().tolist()
 
+def get_voyage_embedding(text):
+    RETRIES = 3
+    tries = 0
+    while RETRIES > tries:
+        try:
+            tries += 1
+            VOYAGE_API_KEY = os.getenv("VOYAGE_API_KEY")
+            vo = voyageai.Client()
+            embed = vo.embed(
+                texts=[text], model="voyage-law-2", input_type="document"
+            ).embeddings[0]
+            return embed
+        except:
+            print("throttling, waiting 30 seconds and retrying")
+            time.sleep(30)
+
 # Initialize the client
 client = DataAPIClient(os.environ["ASTRA_DB_TOKEN"])
 db = client.get_database_by_api_endpoint(
@@ -32,7 +50,7 @@ db = client.get_database_by_api_endpoint(
 )
 collection = db.create_collection(
     collection_name,
-    dimension=384,
+    dimension=1024,
     metric=VectorMetric.COSINE,  # or simply "cosine"
     check_exists=False,
 )
@@ -46,11 +64,11 @@ chunked_documents = text_splitter.split_documents(document)
 
 docs = []
 for doc in chunked_documents:
-    print(len(get_embedding(doc.page_content)))
+    print(f"dimensions of embeddings: {len(get_voyage_embedding(doc.page_content))}")
     docs.append({
         "_id": str(uuid.uuid4()),
         "text": doc.page_content,
-        "$vector": get_embedding(doc.page_content)
+        "$vector": get_voyage_embedding(doc.page_content)
     })
 
 try:
