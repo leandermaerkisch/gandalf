@@ -5,8 +5,10 @@ from pathlib import Path
 dir_ = Path(__file__).parent
 AUDIO_FILE = "assets/gandalf_speech.mp3"
 
+
 def inference(doc: str) -> str:
     return "assets/demo_result.pdf"
+
 
 def download_pdf():
     return "https://gradio-builds.s3.amazonaws.com/assets/pdf-guide/fw9.pdf"

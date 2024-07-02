@@ -1,2 +1,3 @@
 voyageai
 python-dotenv
+ruff

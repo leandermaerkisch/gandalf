@@ -10,7 +10,10 @@ from unstructured.ingest.v2.processes.connectors.local import (
     LocalIndexerConfig,
     LocalUploaderConfig,
 )
-from unstructured.embed.voyageai import VoyageAIEmbeddingConfig, VoyageAIEmbeddingEncoder
+from unstructured.embed.voyageai import (
+    VoyageAIEmbeddingConfig,
+    VoyageAIEmbeddingEncoder,
+)
 from unstructured.ingest.v2.processes.embedder import EmbedderConfig
 from unstructured.ingest.v2.processes.partitioner import PartitionerConfig
 
@@ -42,20 +45,21 @@ Pipeline.from_configs(
     context=ProcessorConfig(work_dir=str(work_dir.resolve())),
     source_connection_config=LocalConnectionConfig(),
     indexer_config=LocalIndexerConfig(
-            input_path=str(docs_path.resolve()) + "/EVS_EN_62304;2006+A1;2015_en.pdf"
-        ),
+        input_path=str(docs_path.resolve()) + "/EVS_EN_62304;2006+A1;2015_en.pdf"
+    ),
     downloader_config=LocalDownloaderConfig(download_dir=download_path),
     partitioner_config=PartitionerConfig(
-        strategy="fast", #"hi_res" #for  images
+        strategy="fast",  # "hi_res" #for  images
         api_key=os.environ["UNSTRUCTURED_API_KEY"],
         partition_by_api=True,
         partition_endpoint=os.environ["UNSTRUCTURED_PARTITION_ENDPOINT"],
-        ),
+    ),
     chunker_config=ChunkerConfig(chunking_strategy="by_title"),
     embedder_config=EmbedderConfig(embedding_provider="langchain-huggingface"),
     destination_connection_config=AstraConnectionConfig(
         access_config=AstraAccessConfig(
-            token=os.environ["ASTRA_DB_TOKEN"], api_endpoint=os.environ["ASTRA_DB_ENDPOINT"]
+            token=os.environ["ASTRA_DB_TOKEN"],
+            api_endpoint=os.environ["ASTRA_DB_ENDPOINT"],
         )
     ),
     stager_config=AstraUploadStagerConfig(),

@@ -17,16 +17,19 @@ from unstructured_client.models import shared
 from unstructured_client.models.errors import SDKError
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
-tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
-model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
+tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+
 
 def get_hugging_face_embedding(text):
-    inputs = tokenizer(text=text, return_tensors='pt', padding=True, truncation=True)
+    inputs = tokenizer(text=text, return_tensors="pt", padding=True, truncation=True)
     with torch.no_grad():
         outputs = model(**inputs)
     return outputs.last_hidden_state.mean(dim=1).squeeze().numpy().tolist()
+
 
 def get_voyage_embedding(text):
     RETRIES = 3
@@ -44,6 +47,7 @@ def get_voyage_embedding(text):
             print("throttling, waiting 30 seconds and retrying")
             time.sleep(30)
 
+
 def partition_by_unstructured(filename):
     client = UnstructuredClient(
         api_key_auth=os.environ["UNSTRUCTURED_API_KEY"],
@@ -51,7 +55,7 @@ def partition_by_unstructured(filename):
     )
     file = open(filename, "rb")
     req = shared.PartitionParameters(
-    # Note that this currently only supports a single file
+        # Note that this currently only supports a single file
         files=shared.Files(
             content=file.read(),
             file_name=filename,
@@ -63,12 +67,15 @@ def partition_by_unstructured(filename):
 
     docs = []
     for doc in res:
-        docs.append({
-            "_id": str(uuid.uuid4()),
-            "text": doc["text"],
-            "$vector": get_hugging_face_embedding(doc["text"])
-        })
+        docs.append(
+            {
+                "_id": str(uuid.uuid4()),
+                "text": doc["text"],
+                "$vector": get_hugging_face_embedding(doc["text"]),
+            }
+        )
     return docs
+
 
 def partition_naive(filename):
     loader = PyPDFLoader(filename)
@@ -78,13 +85,18 @@ def partition_naive(filename):
 
     docs = []
     for doc in chunked_documents:
-        print(f"dimensions of embeddings: {len(get_voyage_embedding(doc.page_content))}")
-        docs.append({
-            "_id": str(uuid.uuid4()),
-            "text": doc.page_content,
-            "$vector": get_voyage_embedding(doc.page_content)
-        })
+        print(
+            f"dimensions of embeddings: {len(get_voyage_embedding(doc.page_content))}"
+        )
+        docs.append(
+            {
+                "_id": str(uuid.uuid4()),
+                "text": doc.page_content,
+                "$vector": get_voyage_embedding(doc.page_content),
+            }
+        )
     return docs
+
 
 try:
     collection_name = "mount_doom_unstructured"
@@ -92,7 +104,7 @@ try:
     # Initialize the client
     client = DataAPIClient(os.environ["ASTRA_DB_TOKEN"])
     db = client.get_database_by_api_endpoint(
-    "https://0d4c3670-be80-4f20-9b32-239e33f592fb-us-east-2.apps.astra.datastax.com"
+        "https://0d4c3670-be80-4f20-9b32-239e33f592fb-us-east-2.apps.astra.datastax.com"
     )
     collection = db.create_collection(
         collection_name,
@@ -102,9 +114,8 @@ try:
     )
     # docs = partition_naive(file_path)
     docs = partition_by_unstructured(file_path)
-    
+
     insertion_result = collection.insert_many(docs)
     print(f"* Inserted {len(insertion_result.inserted_ids)} items.\n")
 except:
     traceback.print_exc()
-

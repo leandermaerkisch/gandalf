@@ -6,7 +6,10 @@ import os
 
 from unstructured.documents.elements import Element
 from unstructured.embed.interfaces import BaseEmbeddingEncoder
-from unstructured.ingest.enhanced_dataclass import EnhancedDataClassJsonMixin, enhanced_field
+from unstructured.ingest.enhanced_dataclass import (
+    EnhancedDataClassJsonMixin,
+    enhanced_field,
+)
 from unstructured.ingest.v2.interfaces.process import BaseProcess
 from unstructured.staging.base import elements_from_json
 
@@ -28,7 +31,10 @@ class EmbedderConfig2(EnhancedDataClassJsonMixin):
             kwargs["model_name"] = self.embedding_model_name
         # TODO make this more dynamic to map to encoder configs
         if self.embedding_provider == "langchain-openai":
-            from unstructured.embed.openai import OpenAIEmbeddingConfig, OpenAIEmbeddingEncoder
+            from unstructured.embed.openai import (
+                OpenAIEmbeddingConfig,
+                OpenAIEmbeddingEncoder,
+            )
 
             return OpenAIEmbeddingEncoder(config=OpenAIEmbeddingConfig(**kwargs))
         elif self.embedding_provider == "langchain-huggingface":
@@ -37,13 +43,21 @@ class EmbedderConfig2(EnhancedDataClassJsonMixin):
                 HuggingFaceEmbeddingEncoder,
             )
 
-            return HuggingFaceEmbeddingEncoder(config=HuggingFaceEmbeddingConfig(**kwargs))
+            return HuggingFaceEmbeddingEncoder(
+                config=HuggingFaceEmbeddingConfig(**kwargs)
+            )
         elif self.embedding_provider == "octoai":
-            from unstructured.embed.octoai import OctoAiEmbeddingConfig, OctoAIEmbeddingEncoder
+            from unstructured.embed.octoai import (
+                OctoAiEmbeddingConfig,
+                OctoAIEmbeddingEncoder,
+            )
 
             return OctoAIEmbeddingEncoder(config=OctoAiEmbeddingConfig(**kwargs))
         elif self.embedding_provider == "langchain-aws-bedrock":
-            from unstructured.embed.bedrock import BedrockEmbeddingConfig, BedrockEmbeddingEncoder
+            from unstructured.embed.bedrock import (
+                BedrockEmbeddingConfig,
+                BedrockEmbeddingEncoder,
+            )
 
             return BedrockEmbeddingEncoder(
                 config=BedrockEmbeddingConfig(
@@ -60,12 +74,19 @@ class EmbedderConfig2(EnhancedDataClassJsonMixin):
 
             return VertexAIEmbeddingEncoder(config=VertexAIEmbeddingConfig(**kwargs))
         elif self.embedding_provider == "langchain-voyageai":
-            from unstructured.embed.voyageai import VoyageAIEmbeddingConfig, VoyageAIEmbeddingEncoder
+            from unstructured.embed.voyageai import (
+                VoyageAIEmbeddingConfig,
+                VoyageAIEmbeddingEncoder,
+            )
+
             return VoyageAIEmbeddingEncoder(
-                config=VoyageAIEmbeddingConfig(api_key=os.environ["VOYAGE_API_KEY"], model_name="voyage-law-2")
+                config=VoyageAIEmbeddingConfig(
+                    api_key=os.environ["VOYAGE_API_KEY"], model_name="voyage-law-2"
+                )
             )
         else:
             raise ValueError(f"{self.embedding_provider} not a recognized encoder")
+
 
 @dataclass
 class Embedder(BaseProcess, ABC):
