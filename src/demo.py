@@ -1,6 +1,7 @@
+from pathlib import Path
+
 import gradio as gr
 from gradio_pdf import PDF
-from pathlib import Path
 
 dir_ = Path(__file__).parent
 AUDIO_FILE = "assets/gandalf_speech.mp3"

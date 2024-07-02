@@ -1,41 +1,11 @@
+import os
 from dotenv import load_dotenv
-import voyageai
-import os
-from unstructured.ingest.v2.interfaces import ProcessorConfig
-from unstructured.ingest.v2.pipeline.pipeline import Pipeline
-from unstructured.ingest.v2.processes.chunker import ChunkerConfig
-from unstructured.ingest.v2.processes.connectors.google_drive import (
-    GoogleDriveAccessConfig,
-    GoogleDriveIndexerConfig,
-    GoogleDriveConnectionConfig,
-    GoogleDriveDownloaderConfig,
-)
-from unstructured.ingest.v2.processes.connectors.astra import (
-    AstraUploaderConfig,
-    AstraConnectionConfig,
-    AstraAccessConfig,
-    AstraUploadStagerConfig,
-)
-import os
-
-from unstructured.ingest.v2.processes.embedder import EmbedderConfig
-from unstructured.ingest.v2.processes.partitioner import PartitionerConfig
-
+from unstructured.ingest.connector.local import SimpleLocalConfig
+from unstructured.ingest.interfaces import (PartitionConfig, ProcessorConfig,
+                                            ReadConfig)
+from unstructured.ingest.runner import LocalRunner
 
 load_dotenv()
-
-from unstructured.ingest.interfaces import PartitionConfig, ProcessorConfig, ReadConfig
-from unstructured.ingest.runner import LocalRunner
-from unstructured.ingest.connector.local import SimpleLocalConfig
-
-from unstructured.ingest.v2.processes.embedder import EmbedderConfig
-from unstructured.ingest.v2.processes.partitioner import PartitionerConfig
-
-import os
-
-from unstructured.ingest.connector.local import SimpleLocalConfig
-from unstructured.ingest.interfaces import PartitionConfig, ProcessorConfig, ReadConfig
-from unstructured.ingest.runner import LocalRunner
 
 if __name__ == "__main__":
     runner = LocalRunner(

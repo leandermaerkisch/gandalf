@@ -1,22 +1,18 @@
 import os
+import time
+import traceback
 import uuid
-import chromadb
-from chromadb.config import Settings
-from langchain_chroma import Chroma
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+import torch
+import voyageai
 from astrapy import DataAPIClient
 from astrapy.constants import VectorMetric
-from transformers import AutoTokenizer, AutoModel
-import torch
-import traceback
-import voyageai
-import time
+from dotenv import load_dotenv
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from transformers import AutoModel, AutoTokenizer
 from unstructured_client import UnstructuredClient
 from unstructured_client.models import shared
-from unstructured_client.models.errors import SDKError
-
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -37,14 +33,13 @@ def get_voyage_embedding(text):
     while RETRIES > tries:
         try:
             tries += 1
-            VOYAGE_API_KEY = os.getenv("VOYAGE_API_KEY")
-            vo = voyageai.Client()
+            vo = voyageai.Client(api_key=os.getenv("VOYAGE_API_KEY"))
             embed = vo.embed(
                 texts=[text], model="voyage-law-2", input_type="document"
             ).embeddings[0]
             return embed
-        except:
-            print("throttling, waiting 30 seconds and retrying")
+        except Exception as e:
+            print(f"throttling, waiting 30 seconds and retrying due to: {e}")
             time.sleep(30)
 
 
@@ -117,5 +112,6 @@ try:
 
     insertion_result = collection.insert_many(docs)
     print(f"* Inserted {len(insertion_result.inserted_ids)} items.\n")
-except:
+except Exception as e:
     traceback.print_exc()
+    print(f"An error occurred: {e}")

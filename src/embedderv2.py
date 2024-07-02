@@ -1,15 +1,13 @@
+import os
 from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
-import os
 
 from unstructured.documents.elements import Element
 from unstructured.embed.interfaces import BaseEmbeddingEncoder
-from unstructured.ingest.enhanced_dataclass import (
-    EnhancedDataClassJsonMixin,
-    enhanced_field,
-)
+from unstructured.ingest.enhanced_dataclass import (EnhancedDataClassJsonMixin,
+                                                    enhanced_field)
 from unstructured.ingest.v2.interfaces.process import BaseProcess
 from unstructured.staging.base import elements_from_json
 
@@ -31,33 +29,25 @@ class EmbedderConfig2(EnhancedDataClassJsonMixin):
             kwargs["model_name"] = self.embedding_model_name
         # TODO make this more dynamic to map to encoder configs
         if self.embedding_provider == "langchain-openai":
-            from unstructured.embed.openai import (
-                OpenAIEmbeddingConfig,
-                OpenAIEmbeddingEncoder,
-            )
+            from unstructured.embed.openai import (OpenAIEmbeddingConfig,
+                                                   OpenAIEmbeddingEncoder)
 
             return OpenAIEmbeddingEncoder(config=OpenAIEmbeddingConfig(**kwargs))
         elif self.embedding_provider == "langchain-huggingface":
             from unstructured.embed.huggingface import (
-                HuggingFaceEmbeddingConfig,
-                HuggingFaceEmbeddingEncoder,
-            )
+                HuggingFaceEmbeddingConfig, HuggingFaceEmbeddingEncoder)
 
             return HuggingFaceEmbeddingEncoder(
                 config=HuggingFaceEmbeddingConfig(**kwargs)
             )
         elif self.embedding_provider == "octoai":
-            from unstructured.embed.octoai import (
-                OctoAiEmbeddingConfig,
-                OctoAIEmbeddingEncoder,
-            )
+            from unstructured.embed.octoai import (OctoAiEmbeddingConfig,
+                                                   OctoAIEmbeddingEncoder)
 
             return OctoAIEmbeddingEncoder(config=OctoAiEmbeddingConfig(**kwargs))
         elif self.embedding_provider == "langchain-aws-bedrock":
-            from unstructured.embed.bedrock import (
-                BedrockEmbeddingConfig,
-                BedrockEmbeddingEncoder,
-            )
+            from unstructured.embed.bedrock import (BedrockEmbeddingConfig,
+                                                    BedrockEmbeddingEncoder)
 
             return BedrockEmbeddingEncoder(
                 config=BedrockEmbeddingConfig(
@@ -67,17 +57,13 @@ class EmbedderConfig2(EnhancedDataClassJsonMixin):
                 )
             )
         elif self.embedding_provider == "langchain-vertexai":
-            from unstructured.embed.vertexai import (
-                VertexAIEmbeddingConfig,
-                VertexAIEmbeddingEncoder,
-            )
+            from unstructured.embed.vertexai import (VertexAIEmbeddingConfig,
+                                                     VertexAIEmbeddingEncoder)
 
             return VertexAIEmbeddingEncoder(config=VertexAIEmbeddingConfig(**kwargs))
         elif self.embedding_provider == "langchain-voyageai":
-            from unstructured.embed.voyageai import (
-                VoyageAIEmbeddingConfig,
-                VoyageAIEmbeddingEncoder,
-            )
+            from unstructured.embed.voyageai import (VoyageAIEmbeddingConfig,
+                                                     VoyageAIEmbeddingEncoder)
 
             return VoyageAIEmbeddingEncoder(
                 config=VoyageAIEmbeddingConfig(

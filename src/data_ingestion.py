@@ -1,34 +1,17 @@
+import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 from unstructured.ingest.v2.interfaces import ProcessorConfig
-from unstructured.ingest.v2.logger import logger
 from unstructured.ingest.v2.pipeline.pipeline import Pipeline
 from unstructured.ingest.v2.processes.chunker import ChunkerConfig
-from unstructured.ingest.v2.processes.connectors.local import (
-    LocalConnectionConfig,
-    LocalDownloaderConfig,
-    LocalIndexerConfig,
-    LocalUploaderConfig,
-)
-from unstructured.embed.voyageai import (
-    VoyageAIEmbeddingConfig,
-    VoyageAIEmbeddingEncoder,
-)
-from unstructured.ingest.v2.processes.embedder import EmbedderConfig
-from unstructured.ingest.v2.processes.partitioner import PartitionerConfig
-
 from unstructured.ingest.v2.processes.connectors.astra import (
-    AstraUploaderConfig,
-    AstraConnectionConfig,
-    AstraAccessConfig,
-    AstraUploadStagerConfig,
-)
-import os
-
+    AstraAccessConfig, AstraConnectionConfig, AstraUploaderConfig,
+    AstraUploadStagerConfig)
+from unstructured.ingest.v2.processes.connectors.local import (
+    LocalConnectionConfig, LocalDownloaderConfig, LocalIndexerConfig)
 from unstructured.ingest.v2.processes.embedder import EmbedderConfig
 from unstructured.ingest.v2.processes.partitioner import PartitionerConfig
-
-from dotenv import load_dotenv
 
 # from embedderv2 import EmbedderConfig2
 
