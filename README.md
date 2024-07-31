@@ -3,6 +3,21 @@
 Gandalf is an AI regulatory assistant to help medical device and pharmaceutical companies bring their products to market faster by pre-checking their documentation before FDA submission. Upload your PDF and receive a comprehensive review in seconds.
 
 Attention: This is a work in progress and not yet ready for production use.
+The frontend (React) and backend (Python) are currently not communicating with each other.
+
+## Contributing
+
+We are actively looking for passionate contributors to join our journey in revolutionizing the regulatory process for medical devices and pharmaceuticals. Whether you're a seasoned developer, a regulatory expert, or someone who loves to tinker with AI, we would love to have you on board!
+
+### How to Contribute
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/YourFeature`)
+3. Commit your changes (`git commit -m 'Add some feature'`)
+4. Push to the branch (`git push origin feature/YourFeature`)
+5. Open a Pull Request
+
+Feel free to check out the open issues and start working on them. If you have any questions or need guidance, don't hesitate to reach out. Let's build something amazing together!
 
 
 # Getting Started
